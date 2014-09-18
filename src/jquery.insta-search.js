@@ -59,6 +59,10 @@
                     id: "searchResponse"
                 }).appendTo(that.$element);
             }
+            // Ensure that the results element has an id
+            if ( that.results.attr("id") === "" ) {
+                that.results.attr("id", "searchResponse");
+            }
 
             // Key Bindings
             that.searchField.keyup(that.keymapping());
@@ -73,7 +77,7 @@
                 }
              });
                 // @TODO probably should be rewritten not to use 'li's as the clickable item.
-                $( document ).on("click", that.results.children("ul").children("li"), function(){
+                $( document ).on("click", that.results.attr("id") + " > ul > li", function(){
                     window.location = $(this).attr("title");
                 });
                 that.results.blur(function(){
