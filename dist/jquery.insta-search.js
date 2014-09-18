@@ -44,80 +44,81 @@
     // Avoid Plugin.prototype conflicts
     $.extend(Plugin.prototype, {
         init: function () {
+            var that = this;
             // Place initialization logic here
             // You already have access to the DOM element and
-            // the options via the instance, e.g. this.element
-            // and this.settings
+            // the options via the instance, e.g. that.element
+            // and that.settings
             // you can add more functions like the one below and
-            // call them like so: this.yourOtherFunction(this.element, this.settings).
+            // call them like so: that.yourOtherFunction(that.element, that.settings).
 
             // Get various elements
 
-            // this.searchField is the input field to search with.
+            // that.searchField is the input field to search with.
             // If given a searchField selector use that otherwise default to the first
             // text field under the main element.
-            this.searchField = ( this.settings.searchField ) ? $( this.settings.searchField ) : this.$element.find(":text");
+            that.searchField = ( that.settings.searchField ) ? $( that.settings.searchField ) : that.$element.find(":text");
 
-            // this.searchResult is the container of the results from the search
-            if ( this.settings.results && this.$element.find(this.settings.results).length > 0 ) {
-                this.results = this.$element.find(this.settings.results);
+            // that.searchResult is the container of the results from the search
+            if ( that.settings.results && that.$element.find(that.settings.results).length > 0 ) {
+                that.results = that.$element.find(that.settings.results);
             } else {
-                this.results = $("div",{
+                that.results = $("div",{
                     id: "searchResponse"
-                }).appendTo(this.$element);
+                }).appendTo(that.$element);
             }
 
             // Key Bindings
-            this.searchField.keyup(this.keymapping);
+            that.searchField.keyup(that.keymapping);
 
-            this.$element.submit(function(e) {
+            that.$element.submit(function(e) {
                 e.preventDefault();
-                if (this.searchField.val() === "") {
-                   this.results.html("");
-                   this.results.css("display","none");
+                if (that.searchField.val() === "") {
+                   that.results.html("");
+                   that.results.css("display","none");
                 } else {
-                   get_results(this.searchField.val());
+                   get_results(that.searchField.val());
                 }
              });
                 // @TODO probably should be rewritten not to use 'li's as the clickable item.
-                $( document ).on("click", this.results.children("ul").children("li"), function(){
+                $( document ).on("click", that.results.children("ul").children("li"), function(){
                     window.location = $(this).attr("title");
                 });
-                this.results.blur(function(){
-                    this.$element.data("clear_results", true);
+                that.results.blur(function(){
+                    that.$element.data("clear_results", true);
                     window.setTimeout(function(){
-                        if (this.$element.data("clear_results") && !this.searchField.is(":focus")) { //put a breakpoint here when testing
-                            this.results.html("");
-                            this.results.css("display","none");
+                        if (that.$element.data("clear_results") && !that.searchField.is(":focus")) { //put a breakpoint here when testing
+                            that.results.html("");
+                            that.results.css("display","none");
                         }
                     }, 1000);
                 });
-                if (this.searchField.val() === "") {
-                    this.results.html("");
-                    this.results.css("display","none");
+                if (that.searchField.val() === "") {
+                    that.results.html("");
+                    that.results.css("display","none");
                 } else {
-                   get_results(this.searchField.val());
+                   get_results(that.searchField.val());
                 }
-                this.searchField.focus(function(){
-                    if (this.searchField.val() === "") {
-                        this.results.html("");
-                        this.results.css("display","none");
+                that.searchField.focus(function(){
+                    if (that.searchField.val() === "") {
+                        that.results.html("");
+                        that.results.css("display","none");
                     } else {
-                   get_results(this.searchField.val());
+                   get_results(that.searchField.val());
                     }
                 });
-                this.results.click(function(){
-                    this.$element.data("clear_results", false);
+                that.results.click(function(){
+                    that.$element.data("clear_results", false);
                 });
-                this.results.css("width",this.searchField.width());
-                this.results.hover(function(){
-                    this.$element.data("clear_results", false);
+                that.results.css("width",that.searchField.width());
+                that.results.hover(function(){
+                    that.$element.data("clear_results", false);
                 },function(){
-                    this.$element.data("clear_results", true);
+                    that.$element.data("clear_results", true);
                     window.setTimeout(function(){
-                        if (this.$element.data("clear_results") && !this.searchField.is(":focus")) {
-                            this.results.html("");
-                            this.results.css("display","none");
+                        if (that.$element.data("clear_results") && !that.searchField.is(":focus")) {
+                            that.results.html("");
+                            that.results.css("display","none");
                         }
                     }, 1000);
                 });
@@ -128,63 +129,64 @@
                    url: "/xm_instance/insta_search.cgi",
                    data: "rm=s&st="+search_str,
                    success: function(data) {
-                      this.results.html(data);
-                      this.results.css({
+                      that.results.html(data);
+                      that.results.css({
                          "display": "block",
                          "height" : (window.innerHeight-100)+"px"
                       });
-                      this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(0));
-                      this.$element.data("is_current").addClass("current");
-                      this.$element.data("isIndex", 0);
+                      that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
+                      that.$element.data("is_current").addClass("current");
+                      that.$element.data("isIndex", 0);
                    }
                 });
              }
         },
         keymapping: function(e){
+            var that = this;
             if (e.which <= 40 && e.which >= 37 || e.which === 9 || (e.which >= 16 && e.which <= 19) || e.which === 20 || e.which === 27 || e.which === 93 || e.which === 91 || e.which === 13) {
                 if (e.which === 40) {
-                    if (this.$element.data("is_current") && this.$element.data("is_current").length > 0) {
-                        if (this.$element.data("isIndex") === this.results.children("ul").find("li:not(.ignore)").length - 1) {
-                            this.$element.data("isIndex", 0);
+                    if (that.$element.data("is_current") && that.$element.data("is_current").length > 0) {
+                        if (that.$element.data("isIndex") === that.results.children("ul").find("li:not(.ignore)").length - 1) {
+                            that.$element.data("isIndex", 0);
                         } else {
-                            this.$element.data("isIndex", this.$element.data("isIndex") + 1);
+                            that.$element.data("isIndex", that.$element.data("isIndex") + 1);
                         }
-                        this.$element.data("is_current").removeClass("current");
-                        this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(this.$element.data("isIndex")));
-                        this.$element.data("is_current").addClass("current");
+                        that.$element.data("is_current").removeClass("current");
+                        that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(that.$element.data("isIndex")));
+                        that.$element.data("is_current").addClass("current");
                     } else {
-                        this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(0));
-                        this.$element.data("is_current").addClass("current");
-                        this.$element.data("isIndex", 0);
+                        that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
+                        that.$element.data("is_current").addClass("current");
+                        that.$element.data("isIndex", 0);
                     }
                     e.preventDefault();
                 } else if (e.which === 38) {
-                    if (this.$element.data("is_current") && this.$element.data("is_current").length > 0) {
-                        if (this.$element.data("isIndex") === 0) {
-                            this.$element.data("isIndex", this.results.children("ul").find("li:not(.ignore)").length - 1);
+                    if (that.$element.data("is_current") && that.$element.data("is_current").length > 0) {
+                        if (that.$element.data("isIndex") === 0) {
+                            that.$element.data("isIndex", that.results.children("ul").find("li:not(.ignore)").length - 1);
                         } else {
-                            this.$element.data("isIndex", this.$element.data("isIndex") - 1);
+                            that.$element.data("isIndex", that.$element.data("isIndex") - 1);
                         }
-                        this.$element.data("is_current").removeClass("current");
-                        this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(this.$element.data("isIndex")));
-                        this.$element.data("is_current").addClass("current");
+                        that.$element.data("is_current").removeClass("current");
+                        that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(that.$element.data("isIndex")));
+                        that.$element.data("is_current").addClass("current");
                     } else {
-                        this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(0));
-                        this.$element.data("is_current").addClass("current");
-                        this.$element.data("isIndex", 0);
+                        that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
+                        that.$element.data("is_current").addClass("current");
+                        that.$element.data("isIndex", 0);
                     }
                     e.preventDefault();
                 } else if (e.which === 13) {
-                    if (this.$element.data("is_current") && this.$element.data("is_current").length > 0) {
-                        window.location = this.$element.data("is_current").attr("title");
+                    if (that.$element.data("is_current") && that.$element.data("is_current").length > 0) {
+                        window.location = that.$element.data("is_current").attr("title");
                     }
                 }
             } else {
-                if (this.searchField.val() === "") {
-                    this.results.html("");
-                    this.results.css("display","none");
+                if (that.searchField.val() === "") {
+                    that.results.html("");
+                    that.results.css("display","none");
                 } else {
-                  get_results(this.searchField.val());
+                  get_results(that.searchField.val());
                 }
             }
         }
