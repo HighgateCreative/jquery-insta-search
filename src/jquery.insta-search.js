@@ -73,7 +73,7 @@
                    that.results.html("");
                    that.results.css("display","none");
                 } else {
-                   get_results(that.searchField.val());
+                   that.get_results(that.searchField.val());
                 }
              });
                 // @TODO probably should be rewritten not to use 'li's as the clickable item.
@@ -93,14 +93,14 @@
                     that.results.html("");
                     that.results.css("display","none");
                 } else {
-                   get_results(that.searchField.val());
+                   that.get_results(that.searchField.val());
                 }
                 that.searchField.focus(function(){
                     if (that.searchField.val() === "") {
                         that.results.html("");
                         that.results.css("display","none");
                     } else {
-                   get_results(that.searchField.val());
+                   that.get_results(that.searchField.val());
                     }
                 });
                 that.results.click(function(){
@@ -119,23 +119,23 @@
                     }, 1000);
                 });
 
-             function get_results(search_str) {
-                $.ajax({
-                   type: "POST",
-                   url: "/xm_instance/insta_search.cgi",
-                   data: "rm=s&st="+search_str,
-                   success: function(data) {
-                      that.results.html(data);
-                      that.results.css({
-                         "display": "block",
-                         "height" : (window.innerHeight-100)+"px"
-                      });
-                      that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
-                      that.$element.data("is_current").addClass("current");
-                      that.$element.data("isIndex", 0);
-                   }
-                });
-             }
+        },
+        get_results: function(search_str) {
+            $.ajax({
+               type: "POST",
+               url: "/xm_instance/insta_search.cgi",
+               data: "rm=s&st="+search_str,
+               success: function(data) {
+                  that.results.html(data);
+                  that.results.css({
+                     "display": "block",
+                     "height" : (window.innerHeight-100)+"px"
+                  });
+                  that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
+                  that.$element.data("is_current").addClass("current");
+                  that.$element.data("isIndex", 0);
+               }
+            });
         },
         keymapping: function(){
             var that = this;
@@ -183,7 +183,7 @@
                         that.results.html("");
                         that.results.css("display","none");
                     } else {
-                        get_results(that.searchField.val());
+                        that.get_results(that.searchField.val());
                     }
                 }
             };
