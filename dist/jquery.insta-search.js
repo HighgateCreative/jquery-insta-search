@@ -33,10 +33,8 @@
     // The actual plugin constructor
     function Plugin ( element, options ) {
         this.element = element;
-        // jQuery has an extend method which merges the contents of two or
-        // more objects, storing the result in the first object. The first object
-        // is generally empty as we don't want to alter the default options for
-        // future instances of the plugin
+        this.$element = $(element); // cache jQuery element
+
         this.settings = $.extend( {}, defaults, options );
         this._defaults = defaults;
         this._name = pluginName;
@@ -58,21 +56,21 @@
             // this.searchField is the input field to search with.
             // If given a searchField selector use that otherwise default to the first
             // text field under the main element.
-            this.searchField = ( this.settings.searchField ) ? $( this.settings.searchField ) : this.element.find(":text");
+            this.searchField = ( this.settings.searchField ) ? $( this.settings.searchField ) : this.$element.find(":text");
 
             // this.searchResult is the container of the results from the search
-            if ( this.settings.results && this.element.find(this.settings.results).length > 0 ) {
-                this.results = this.element.find(this.settings.results);
+            if ( this.settings.results && this.$element.find(this.settings.results).length > 0 ) {
+                this.results = this.$element.find(this.settings.results);
             } else {
                 this.results = $("div",{
                     id: "searchResponse"
-                }).appendTo(this.element);
+                }).appendTo(this.$element);
             }
 
             // Key Bindings
             this.searchField.keyup(this.keymapping);
 
-            this.element.submit(function(e) {
+            this.$element.submit(function(e) {
                 e.preventDefault();
                 if (this.searchField.val() === "") {
                    this.results.html("");
@@ -86,9 +84,9 @@
                     window.location = $(this).attr("title");
                 });
                 this.results.blur(function(){
-                    this.element.data("clear_results", true);
+                    this.$element.data("clear_results", true);
                     window.setTimeout(function(){
-                        if (this.element.data("clear_results") && !this.searchField.is(":focus")) { //put a breakpoint here when testing
+                        if (this.$element.data("clear_results") && !this.searchField.is(":focus")) { //put a breakpoint here when testing
                             this.results.html("");
                             this.results.css("display","none");
                         }
@@ -109,15 +107,15 @@
                     }
                 });
                 this.results.click(function(){
-                    this.element.data("clear_results", false);
+                    this.$element.data("clear_results", false);
                 });
                 this.results.css("width",this.searchField.width());
                 this.results.hover(function(){
-                    this.element.data("clear_results", false);
+                    this.$element.data("clear_results", false);
                 },function(){
-                    this.element.data("clear_results", true);
+                    this.$element.data("clear_results", true);
                     window.setTimeout(function(){
-                        if (this.element.data("clear_results") && !this.searchField.is(":focus")) {
+                        if (this.$element.data("clear_results") && !this.searchField.is(":focus")) {
                             this.results.html("");
                             this.results.css("display","none");
                         }
@@ -135,9 +133,9 @@
                          "display": "block",
                          "height" : (window.innerHeight-100)+"px"
                       });
-                      this.elmement.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(0));
-                      this.elmement.data("is_current").addClass("current");
-                      this.element.data("isIndex", 0);
+                      this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(0));
+                      this.$element.data("is_current").addClass("current");
+                      this.$element.data("isIndex", 0);
                    }
                 });
              }
@@ -145,40 +143,40 @@
         keymapping: function(e){
             if (e.which <= 40 && e.which >= 37 || e.which === 9 || (e.which >= 16 && e.which <= 19) || e.which === 20 || e.which === 27 || e.which === 93 || e.which === 91 || e.which === 13) {
                 if (e.which === 40) {
-                    if (this.elmement.data("is_current") && this.elmement.data("is_current").length > 0) {
-                        if (this.element.data("isIndex") === this.results.children("ul").find("li:not(.ignore)").length - 1) {
-                            this.element.data("isIndex", 0);
+                    if (this.$element.data("is_current") && this.$element.data("is_current").length > 0) {
+                        if (this.$element.data("isIndex") === this.results.children("ul").find("li:not(.ignore)").length - 1) {
+                            this.$element.data("isIndex", 0);
                         } else {
-                            this.element.data("isIndex", this.element.data("isIndex") + 1);
+                            this.$element.data("isIndex", this.$element.data("isIndex") + 1);
                         }
-                        this.elmement.data("is_current").removeClass("current");
-                        this.elmement.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(this.element.data("isIndex")));
-                        this.elmement.data("is_current").addClass("current");
+                        this.$element.data("is_current").removeClass("current");
+                        this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(this.$element.data("isIndex")));
+                        this.$element.data("is_current").addClass("current");
                     } else {
-                        this.elmement.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(0));
-                        this.elmement.data("is_current").addClass("current");
-                        this.element.data("isIndex", 0);
+                        this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(0));
+                        this.$element.data("is_current").addClass("current");
+                        this.$element.data("isIndex", 0);
                     }
                     e.preventDefault();
                 } else if (e.which === 38) {
-                    if (this.elmement.data("is_current") && this.elmement.data("is_current").length > 0) {
-                        if (this.element.data("isIndex") === 0) {
-                            this.element.data("isIndex", this.results.children("ul").find("li:not(.ignore)").length - 1);
+                    if (this.$element.data("is_current") && this.$element.data("is_current").length > 0) {
+                        if (this.$element.data("isIndex") === 0) {
+                            this.$element.data("isIndex", this.results.children("ul").find("li:not(.ignore)").length - 1);
                         } else {
-                            this.element.data("isIndex", this.element.data("isIndex") - 1);
+                            this.$element.data("isIndex", this.$element.data("isIndex") - 1);
                         }
-                        this.elmement.data("is_current").removeClass("current");
-                        this.elmement.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(this.element.data("isIndex")));
-                        this.elmement.data("is_current").addClass("current");
+                        this.$element.data("is_current").removeClass("current");
+                        this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(this.$element.data("isIndex")));
+                        this.$element.data("is_current").addClass("current");
                     } else {
-                        this.elmement.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(0));
-                        this.elmement.data("is_current").addClass("current");
-                        this.element.data("isIndex", 0);
+                        this.$element.data("is_current", this.results.children("ul").find("li:not(.ignore)").eq(0));
+                        this.$element.data("is_current").addClass("current");
+                        this.$element.data("isIndex", 0);
                     }
                     e.preventDefault();
                 } else if (e.which === 13) {
-                    if (this.elmement.data("is_current") && this.elmement.data("is_current").length > 0) {
-                        window.location = this.elmement.data("is_current").attr("title");
+                    if (this.$element.data("is_current") && this.$element.data("is_current").length > 0) {
+                        window.location = this.$element.data("is_current").attr("title");
                     }
                 }
             } else {
