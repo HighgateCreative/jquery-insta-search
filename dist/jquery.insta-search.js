@@ -1,9 +1,9 @@
 /*
- *  jQuery Boilerplate - v3.3.4
- *  A jump-start for jQuery plugins development.
- *  http://jqueryboilerplate.com
+ *  jQuery Insta-Search - v0.1.0
+ *  Add Google like instant searching to your search form.
+ *  
  *
- *  Made by Zeno Rocha
+ *  Made by Sean Zellmer
  *  Under MIT License
  */
 // the semi-colon before function invocation is a safety net against concatenated
@@ -58,11 +58,11 @@
             // this.searchField is the input field to search with.
             // If given a searchField selector use that otherwise default to the first
             // text field under the main element.
-            this.searchField = ( this.setting.searchField ) ? $( this.setting.searchField ) : this.element.find(":text");
+            this.searchField = ( this.settings.searchField ) ? $( this.settings.searchField ) : this.element.find(":text");
 
             // this.searchResult is the container of the results from the search
-            if ( this.setting.results && this.element.find(this.setting.results).length > 0 ) {
-                this.results = this.element.find(this.setting.results);
+            if ( this.settings.results && this.element.find(this.settings.results).length > 0 ) {
+                this.results = this.element.find(this.settings.results);
             } else {
                 this.results = $("div",{
                     id: "searchResponse"

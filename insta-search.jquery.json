@@ -14,7 +14,7 @@
         "url": "http://www.highgatecross.com"
     },
     "maintainers": [
-        "author": {
+        {
             "name": "Sean Zellmer",
             "email": "sean@highgatecross.com",
             "url": "http://www.highgatecross.com"

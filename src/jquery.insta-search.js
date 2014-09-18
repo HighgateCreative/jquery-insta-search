@@ -50,11 +50,11 @@
             // this.searchField is the input field to search with.
             // If given a searchField selector use that otherwise default to the first
             // text field under the main element.
-            this.searchField = ( this.setting.searchField ) ? $( this.setting.searchField ) : this.element.find(":text");
+            this.searchField = ( this.settings.searchField ) ? $( this.settings.searchField ) : this.element.find(":text");
 
             // this.searchResult is the container of the results from the search
-            if ( this.setting.results && this.element.find(this.setting.results).length > 0 ) {
-                this.results = this.element.find(this.setting.results);
+            if ( this.settings.results && this.element.find(this.settings.results).length > 0 ) {
+                this.results = this.element.find(this.settings.results);
             } else {
                 this.results = $("div",{
                     id: "searchResponse"
