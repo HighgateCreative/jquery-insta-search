@@ -1,0 +1,16 @@
+{
+	"name": "jquery-insta-search",
+	"version": "0.1.0",
+	"homepage": "",
+	"authors": [
+		"Sean Zellmer <sean@highgatecross.com>"
+	],
+	"description": "Add Google like instant searching to your search form.",
+	"main": "src/jquery.insta-search.js",
+	"keywords": [
+		"jquery",
+		"plugin",
+		"searching"
+	],
+	"license": "MIT"
+}

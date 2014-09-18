@@ -1,0 +1,36 @@
+{
+    "name": "boilerplate",
+    "title": "jQuery Insta-Search",
+    "description": "Add Google like instant searching to your search form.",
+    "keywords": [
+        "jquery",
+        "searching",
+        "plugins"
+    ],
+    "version": "0.1.0",
+    "author": {
+        "name": "Sean Zellmer",
+        "email": "sean@highgatecross.com",
+        "url": "http://www.highgatecross.com"
+    },
+    "maintainers": [
+        "author": {
+            "name": "Sean Zellmer",
+            "email": "sean@highgatecross.com",
+            "url": "http://www.highgatecross.com"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": ""
+        }
+    ],
+    "bugs": "https://github.com/HighgateCross/jquery-insta-search/issues",
+    "homepage": "",
+    "docs": "https://github.com/HighgateCross/jquery-insta-search#readme",
+    "download": "https://github.com/HighgateCross/jquery-insta-search/archive/master.zip",
+    "dependencies": {
+        "jquery": ">=1.7"
+    }
+}
