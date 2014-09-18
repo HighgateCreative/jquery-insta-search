@@ -22,6 +22,8 @@
     // Create the defaults once
     var pluginName = "instaSearch",
     defaults = {
+        ajaxParams: {},
+        url: "",
         results: null,
         searchField: null
     };
@@ -129,10 +131,17 @@
 
         },
         get_results: function(search_str) {
+            var that = this;
+            // Setup params
+            var search_params = {
+                st: search_str
+            };
+            var params = $.extend( {}, this.settings.ajaxParams, search_params );
+
             $.ajax({
                type: "POST",
-               url: "/xm_instance/insta_search.cgi",
-               data: "rm=s&st="+search_str,
+               url: that.settings.url,
+               data: params,
                success: function(data) {
                   that.results.html(data);
                   that.results.css({
