@@ -69,7 +69,7 @@
             }
 
             // Key Bindings
-            that.searchField.keyup(that.keymapping);
+            that.searchField.keyup(that.keymapping());
 
             that.$element.submit(function(e) {
                 e.preventDefault();
@@ -141,54 +141,56 @@
                 });
              }
         },
-        keymapping: function(e){
+        keymapping: function(){
             var that = this;
-            if (e.which <= 40 && e.which >= 37 || e.which === 9 || (e.which >= 16 && e.which <= 19) || e.which === 20 || e.which === 27 || e.which === 93 || e.which === 91 || e.which === 13) {
-                if (e.which === 40) {
-                    if (that.$element.data("is_current") && that.$element.data("is_current").length > 0) {
-                        if (that.$element.data("isIndex") === that.results.children("ul").find("li:not(.ignore)").length - 1) {
+            return function(e) {
+                if (e.which <= 40 && e.which >= 37 || e.which === 9 || (e.which >= 16 && e.which <= 19) || e.which === 20 || e.which === 27 || e.which === 93 || e.which === 91 || e.which === 13) {
+                    if (e.which === 40) {
+                        if (that.$element.data("is_current") && that.$element.data("is_current").length > 0) {
+                            if (that.$element.data("isIndex") === that.results.children("ul").find("li:not(.ignore)").length - 1) {
+                                that.$element.data("isIndex", 0);
+                            } else {
+                                that.$element.data("isIndex", that.$element.data("isIndex") + 1);
+                            }
+                            that.$element.data("is_current").removeClass("current");
+                            that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(that.$element.data("isIndex")));
+                            that.$element.data("is_current").addClass("current");
+                        } else {
+                            that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
+                            that.$element.data("is_current").addClass("current");
                             that.$element.data("isIndex", 0);
-                        } else {
-                            that.$element.data("isIndex", that.$element.data("isIndex") + 1);
                         }
-                        that.$element.data("is_current").removeClass("current");
-                        that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(that.$element.data("isIndex")));
-                        that.$element.data("is_current").addClass("current");
-                    } else {
-                        that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
-                        that.$element.data("is_current").addClass("current");
-                        that.$element.data("isIndex", 0);
-                    }
-                    e.preventDefault();
-                } else if (e.which === 38) {
-                    if (that.$element.data("is_current") && that.$element.data("is_current").length > 0) {
-                        if (that.$element.data("isIndex") === 0) {
-                            that.$element.data("isIndex", that.results.children("ul").find("li:not(.ignore)").length - 1);
+                        e.preventDefault();
+                    } else if (e.which === 38) {
+                        if (that.$element.data("is_current") && that.$element.data("is_current").length > 0) {
+                            if (that.$element.data("isIndex") === 0) {
+                                that.$element.data("isIndex", that.results.children("ul").find("li:not(.ignore)").length - 1);
+                            } else {
+                                that.$element.data("isIndex", that.$element.data("isIndex") - 1);
+                            }
+                            that.$element.data("is_current").removeClass("current");
+                            that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(that.$element.data("isIndex")));
+                            that.$element.data("is_current").addClass("current");
                         } else {
-                            that.$element.data("isIndex", that.$element.data("isIndex") - 1);
+                            that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
+                            that.$element.data("is_current").addClass("current");
+                            that.$element.data("isIndex", 0);
                         }
-                        that.$element.data("is_current").removeClass("current");
-                        that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(that.$element.data("isIndex")));
-                        that.$element.data("is_current").addClass("current");
-                    } else {
-                        that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
-                        that.$element.data("is_current").addClass("current");
-                        that.$element.data("isIndex", 0);
+                        e.preventDefault();
+                    } else if (e.which === 13) {
+                        if (that.$element.data("is_current") && that.$element.data("is_current").length > 0) {
+                            window.location = that.$element.data("is_current").attr("title");
+                        }
                     }
-                    e.preventDefault();
-                } else if (e.which === 13) {
-                    if (that.$element.data("is_current") && that.$element.data("is_current").length > 0) {
-                        window.location = that.$element.data("is_current").attr("title");
-                    }
-                }
-            } else {
-                if (that.searchField.val() === "") {
-                    that.results.html("");
-                    that.results.css("display","none");
                 } else {
-                  get_results(that.searchField.val());
+                    if (that.searchField.val() === "") {
+                        that.results.html("");
+                        that.results.css("display","none");
+                    } else {
+                        get_results(that.searchField.val());
+                    }
                 }
-            }
+            };
         }
     });
 
