@@ -155,7 +155,7 @@
                   that.results.css({
                      "display": "block",
                       // @TODO fix height to be relative to the searchField's position
-                     "height" : (window.innerHeight-100)+"px"
+                     "height" : ( ( $(document).innerHeight() - ( that.searchField.offset().top + that.searchField.outerHeight( true ) ) ) - 100 )+"px"
                   });
                   that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
                   that.$element.data("is_current").addClass("current");
