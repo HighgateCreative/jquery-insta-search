@@ -87,17 +87,6 @@
             $( document ).on("click", that.results.attr("id") + " > ul > li", function(){
                 window.location = $(this).attr("title");
             });
-            that.results.blur(function(){
-                if (!that.settings.debug) {
-                    that.$element.data("clear_results", true);
-                }
-                window.setTimeout(function(){
-                    if (that.$element.data("clear_results") && !that.searchField.is(":focus")) { //put a breakpoint here when testing
-                        that.results.html("");
-                        that.results.css("display","none");
-                    }
-                }, 1000);
-            });
             that.results.click(function(){
                 that.$element.data("clear_results", false);
             });
@@ -136,6 +125,17 @@
                 } else {
                that.get_results(that.searchField.val());
                 }
+            });
+            that.searchField.blur(function(){
+                if (!that.settings.debug) {
+                    that.$element.data("clear_results", true);
+                }
+                window.setTimeout(function(){
+                    if (that.$element.data("clear_results") && !that.searchField.is(":focus")) { //put a breakpoint here when testing
+                        that.results.html("");
+                        that.results.css("display","none");
+                    }
+                }, 1000);
             });
         },
         get_results: function(search_str) {
