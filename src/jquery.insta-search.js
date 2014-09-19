@@ -17,7 +17,8 @@
         ajaxParams: {},
         url: "",
         results: null,
-        searchField: null
+        searchField: null,
+        debug: false
     };
 
     if (!$[pluginName]) {
@@ -57,7 +58,7 @@
             if ( that.settings.results && that.$element.find(that.settings.results).length > 0 ) {
                 that.results = that.$element.find(that.settings.results);
             } else {
-                that.results = $("div",{
+                that.results = $("<div>",{
                     id: "searchResponse"
                 }).appendTo(that.$element);
             }
@@ -77,50 +78,65 @@
                 } else {
                    that.get_results(that.searchField.val());
                 }
-             });
-                // @TODO probably should be rewritten not to use 'li's as the clickable item.
-                $( document ).on("click", that.results.attr("id") + " > ul > li", function(){
-                    window.location = $(this).attr("title");
-                });
-                that.results.blur(function(){
+            });
+
+            // ===== results =====
+
+            // ----- Events -----
+            // @TODO probably should be rewritten not to use 'li's as the clickable item.
+            $( document ).on("click", that.results.attr("id") + " > ul > li", function(){
+                window.location = $(this).attr("title");
+            });
+            that.results.blur(function(){
+                if (!that.settings.debug) {
                     that.$element.data("clear_results", true);
-                    window.setTimeout(function(){
-                        if (that.$element.data("clear_results") && !that.searchField.is(":focus")) { //put a breakpoint here when testing
-                            that.results.html("");
-                            that.results.css("display","none");
-                        }
-                    }, 1000);
-                });
+                }
+                window.setTimeout(function(){
+                    if (that.$element.data("clear_results") && !that.searchField.is(":focus")) { //put a breakpoint here when testing
+                        that.results.html("");
+                        that.results.css("display","none");
+                    }
+                }, 1000);
+            });
+            that.results.click(function(){
+                that.$element.data("clear_results", false);
+            });
+            that.results.hover(function(){
+                that.$element.data("clear_results", false);
+            }, function(){
+                if (!that.settings.debug) {
+                    that.$element.data("clear_results", true);
+                }
+                window.setTimeout(function(){
+                    if (that.$element.data("clear_results") && !that.searchField.is(":focus")) {
+                        that.results.html("");
+                        that.results.css("display","none");
+                    }
+                }, 1000);
+            });
+
+            // Initialize contents
+            if (that.searchField.val() === "") {
+                that.results.html("");
+                that.results.css("display","none");
+            } else {
+               that.get_results(that.searchField.val());
+            }
+
+            // Style
+            that.results.css("width",that.searchField.width());
+
+            // ===== searchField =====
+
+            // ----- Events -----
+            that.searchField.focus(function(){
                 if (that.searchField.val() === "") {
                     that.results.html("");
                     that.results.css("display","none");
                 } else {
-                   that.get_results(that.searchField.val());
+               that.get_results(that.searchField.val());
                 }
-                that.searchField.focus(function(){
-                    if (that.searchField.val() === "") {
-                        that.results.html("");
-                        that.results.css("display","none");
-                    } else {
-                   that.get_results(that.searchField.val());
-                    }
-                });
-                that.results.click(function(){
-                    that.$element.data("clear_results", false);
-                });
-                that.results.css("width",that.searchField.width());
-                that.results.hover(function(){
-                    that.$element.data("clear_results", false);
-                },function(){
-                    that.$element.data("clear_results", true);
-                    window.setTimeout(function(){
-                        if (that.$element.data("clear_results") && !that.searchField.is(":focus")) {
-                            that.results.html("");
-                            that.results.css("display","none");
-                        }
-                    }, 1000);
-                });
-
+            });
         },
         get_results: function(search_str) {
             var that = this;
@@ -138,6 +154,7 @@
                   that.results.html(data);
                   that.results.css({
                      "display": "block",
+                      // @TODO fix height to be relative to the searchField's position
                      "height" : (window.innerHeight-100)+"px"
                   });
                   that.$element.data("is_current", that.results.children("ul").find("li:not(.ignore)").eq(0));
